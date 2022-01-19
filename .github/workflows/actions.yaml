@@ -1,0 +1,18 @@
+name: Running commands on the Runner
+on:
+ push:
+   branches:
+     - main
+     
+jobs:
+  basic:
+   runs-on:ubuntu-latest
+   steps:
+    - name: Greeting GitHub Actions
+      run: echo "Hello Github Actions!!"
+    - name: printing Hostname
+      run: echo $HOSTNAME
+    - name: printing whoami
+      run: echo $WHOAMI
+      
+  
