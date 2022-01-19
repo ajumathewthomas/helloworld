@@ -6,7 +6,7 @@ on:
      
 jobs:
   basic:
-   runs-on:ubuntu-latest
+   runs-on: ubuntu-latest
    steps:
     - name: Greeting GitHub Actions
       run: echo "Hello Github Actions!!"
