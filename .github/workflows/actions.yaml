@@ -12,7 +12,7 @@ jobs:
       run: echo "Hello Github Actions!!"
     - name: printing Hostname
       run: echo $HOSTNAME
-    - name: printing whoami
-      run: echo $WHOAMI
+    - name: printing id
+      run: echo $ID
       
   
