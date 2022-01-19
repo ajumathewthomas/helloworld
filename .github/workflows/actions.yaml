@@ -13,6 +13,6 @@ jobs:
     - name: printing Hostname
       run: echo $HOSTNAME
     - name: printing id
-      run: echo $ID
+      run: echo $id
       
   
