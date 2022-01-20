@@ -25,27 +25,28 @@ jobs:
            flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
            # The exit zero flag will show errors as warnings and not fail the run
            flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-  jobs:
-    build:
-     runs-on: ubuntu-latest
-     needs: lint
-     steps: 
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with: 
+
+jobs:
+ build:
+  runs-on: ubuntu-latest
+  needs: lint
+  steps: 
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with: 
           python-version: 3.8
-      - name: Installing Libraries
-        run: |
+    - name: Installing Libraries
+      run: |
             cd bad
             python -m pip install --upgrade pip
             if [ -f requirements.txt ]; then pip install -r requirements.txt -t .; fi
-      - name: Archive Artifact
-        uses: actions/upload-artifact@v2
-        with:
-           name: zipped-bundle
-           path: ${{ github.sha }}.zip
+    - name: Archive Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: zipped-bundle
+        path: ${{ github.sha }}.zip
            
 
     
