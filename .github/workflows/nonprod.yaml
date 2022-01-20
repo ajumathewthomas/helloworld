@@ -1,4 +1,4 @@
-name: new fetaure to AWS s3 bucket
+name: Added new fetaure and uploaded to AWS s3 bucket
 on:
  push:
    branches:
