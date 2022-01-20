@@ -45,12 +45,12 @@ jobs:
     - name: create zip bundle
       run: | 
 
-          zip -r ${{ github.sha }}.zip ./
+          zip -r deploy_package.zip ./
     - name: Archive Artifact
       uses: actions/upload-artifact@v2
       with:
         name: zipped-bundle
-        path: ${{ github.sha }}.zip
+        path: deploy_package.zip
            
  deploy:
   runs-on: ubuntu-latest
@@ -74,13 +74,13 @@ jobs:
      with:
        name: zipped-bundle
   -  name: Upload to S3 Bucket
-     run: aws s3 cp ${{ github.sha }}.zip s3://githubactions3-nonprod/  
+     run: aws s3 cp deploy_package.zip s3://githubactions3-nonprod/  
 
   -  name: Create a new ElasticBean Application 
      run: |
          aws elasticbeanstalk create-application-version \
           --application-name MyApp \
-          --source-bundle S3Bucket="githubactions3-nonprod",S3Key="${{ github.sha }}.zip" \
+          --source-bundle S3Bucket="githubactions3-nonprod",S3Key="deploy_package.zip" \
           --version-label "1.0" \
           --description "vulnerable App" 
   -  name: Deploy new ElasticBeanstalk Application Version
