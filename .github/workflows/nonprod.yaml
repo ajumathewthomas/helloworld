@@ -5,7 +5,7 @@ on:
      - feature_*
      
 jobs:
-  upload:
+  build:
    runs-on: ubuntu-latest
    steps:
    -  name: checkout code
