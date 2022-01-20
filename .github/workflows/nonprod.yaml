@@ -17,6 +17,6 @@ jobs:
          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
          aws-region: us-east-1
    -  name: Upload to S3 Bucket
-      run: aws s3 cp admin s3://githubactions3-nonprod/ --recursive --acl public-read
+      run: aws s3 cp admin s3://githubactions3-nonprod/ --recursive --acl public-read   
     
   
