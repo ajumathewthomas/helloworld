@@ -80,7 +80,7 @@ jobs:
      run: |
          aws elasticbeanstalk create-application-version \
           --application-name MyApp \
-          --source-bundle S3Bucket="githubactions3-nonprod",S3Key="deploy_package.zip" \
+          --source-bundle S3Bucket=githubactions3-nonprod,S3Key=deploy_package.zip \
           --version-label "1.0" \
           --description "vulnerable App" 
   -  name: Deploy new ElasticBeanstalk Application Version
