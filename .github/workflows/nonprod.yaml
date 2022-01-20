@@ -79,5 +79,5 @@ jobs:
        application_name: githubactionsapplication
        environment_name: Githubactionsapplication-env
        version_label: 1.0
-       region: "us-east-1"
+       region: "ap-south-1"
        deployment_package: ${{ github.sha }}.zip
