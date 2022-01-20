@@ -67,5 +67,13 @@ jobs:
            python -m pip install --upgrade pip 
            pip install awsebcli --upgrade
            eb --version
+  -  name: Configure AWS Credentials
+     uses: aws-actions/configure-aws-credentials@v1
+     with:
+       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+       aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+       aws-region: us-east-1
+  -  name: Uploading to AWS S3 Bucekt
+     run: aws s3 cp ${{ github.sha }}.zip s3://githubactions3-prod/ --recursive --acl public-read   
   
   
