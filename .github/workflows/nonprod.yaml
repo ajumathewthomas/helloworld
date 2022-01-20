@@ -1,4 +1,4 @@
-name: Running commands on the Runner
+name: uploading new fetaure to s3 bucket
 on:
  push:
    branches:
