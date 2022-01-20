@@ -1,4 +1,4 @@
-name: Installing libraries and uplaoding to workflow
+name: Deploying to EB
 on:
  push:
    branches:
