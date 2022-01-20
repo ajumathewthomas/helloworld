@@ -5,18 +5,18 @@ on:
      - feature_*
      
 jobs:
-  build:
+  upload:
    runs-on: ubuntu-latest
    steps:
    -  name: checkout code
       uses: actions/checkout@v2
-    - name: Configure AWS Credentials
+   -  name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with: 
          aws-access-key: ${{ secrets.AWS_ACCESS_KEY }}
          aws-secret-key: ${{ secrets.AWS_SECRET_KEY }}
          aws-region: us-east-1
-    - name: Upload to S3 Bucket
+   -  name: Upload to S3 Bucket
       run: aws s3 cp admin s3://githubactions3-nonprod/ --recursive --acl public-read
     
   
