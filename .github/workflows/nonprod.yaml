@@ -45,7 +45,7 @@ jobs:
     - name: create zip bundle
       run: | 
 
-          zip -r ../${{ github.sha }}.zip .
+          zip -r ${{ github.sha }}.zip ./
     - name: Archive Artifact
       uses: actions/upload-artifact@v2
       with:
@@ -62,11 +62,6 @@ jobs:
      uses: actions/setup-python@v2
      with: 
         python-version: 3.8
-  -  name: Install Elastic Bean CLI
-     run: |
-           python -m pip install --upgrade pip 
-           pip install awsebcli --upgrade
-           eb --version
 
   -  name: Configure AWS Credentials
      uses: aws-actions/configure-aws-credentials@v1
@@ -74,10 +69,19 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: us-east-1
-  -  name: Create EBS application
+  -  name: Download artifact
+     uses: actions/download-artifact@v2
+     with:
+       name: zipped-bundle
+  -  name: Upload to S3 Bucket
+     run: aws s3 cp ${{ github.sha }}.zip s3://githubactions3-nonprod/  
+
+  -  name: Create a new ElasticBean Application 
      run: |
-          eb init -p python-3.8 hello-world --region ap-south-1
-      # Deploy to (or Create) the Elastic Beanstalk environment
-  -  name: Create test environment & deploy
-     run: |
-          eb use Githubactionsapplication-env && eb status Githubactionsapplication-env && eb deploy
+         aws elasticbeanstalk create-application-version \
+          --application-name MyApp \
+          --source-bundle S3Bucket="githubactions3-nonprod",S3Key="${{ github.sha }}.zip" \
+          --version-label "1.0" \
+          --description "vulnerable App" 
+  -  name: Deploy new ElasticBeanstalk Application Version
+     run: aws elasticbeanstalk update-environment --environment-name MyApp-env-1 --version-label "1.0"
