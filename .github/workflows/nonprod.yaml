@@ -68,8 +68,8 @@ jobs:
            pip install awsebcli --upgrade
            eb --version
   -  name: Download artifact
-        uses: actions/download-artifact@v2
-        with:
+     uses: actions/download-artifact@v2
+     with:
           name: zipped-bundle
   -  name: Configure AWS Credentials
      uses: aws-actions/configure-aws-credentials@v1
