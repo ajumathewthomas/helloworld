@@ -76,7 +76,7 @@ jobs:
           aws-region: us-east-1
   -  name: Create EBS application
      run: |
-          eb init -p python-3.6 hello-world --region us-east-1
+          eb init -p python-3.8 hello-world --region ap-south-1
       # Deploy to (or Create) the Elastic Beanstalk environment
   -  name: Create test environment & deploy
      run: |
