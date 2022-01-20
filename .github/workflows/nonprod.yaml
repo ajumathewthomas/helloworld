@@ -22,7 +22,7 @@ jobs:
     - name: Lint with flake8
       run: |
            # Select identifies which errors should cause the job to fail
-           flake8 . --count --select=E9,F63,F7,F82,F401 --show-source --statistics
+           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
            # The exit zero flag will show errors as warnings and not fail the run
            flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
@@ -42,6 +42,10 @@ jobs:
             cd bad
             python -m pip install --upgrade pip
             if [ -f requirements.txt ]; then pip install -r requirements.txt -t .; fi
+    - name: create zip bundle
+      run: | 
+          cd bad
+          zip -r ../${{ github.sha }}.zip
     - name: Archive Artifact
       uses: actions/upload-artifact@v2
       with:
