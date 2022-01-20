@@ -39,12 +39,12 @@ jobs:
           python-version: 3.8
     - name: Installing Libraries
       run: |
-          cd bad
+            
             python -m pip install --upgrade pip
             if [ -f requirements.txt ]; then pip install -r requirements.txt -t .; fi
     - name: create zip bundle
       run: | 
-          cd bad
+
           zip -r ../${{ github.sha }}.zip .
     - name: Archive Artifact
       uses: actions/upload-artifact@v2
@@ -67,17 +67,17 @@ jobs:
            python -m pip install --upgrade pip 
            pip install awsebcli --upgrade
            eb --version
-  -  name: Download artifact
-     uses: actions/download-artifact@v2
+
+  -  name: Configure AWS Credentials
+     uses: aws-actions/configure-aws-credentials@v1
      with:
-       name: zipped-bundle
-  -  name: Deploy to EB
-     uses: einaregilsson/beanstalk-deploy@v20
-     with: 
-       aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
-       aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
-       application_name: githubactionsapplication
-       environment_name: Githubactionsapplication-env
-       version_label: 1.0
-       region: "ap-south-1"
-       deployment_package: ${{ github.sha }}.zip
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: us-east-1
+  -  name: Create EBS application
+     run: |
+          eb init -p python-3.6 hello-world --region us-east-1
+      # Deploy to (or Create) the Elastic Beanstalk environment
+  -  name: Create test environment & deploy
+     run: |
+          (eb use test-environment && eb status test-environment && eb deploy) || eb create test-environment
