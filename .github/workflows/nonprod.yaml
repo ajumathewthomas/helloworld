@@ -57,6 +57,6 @@ jobs:
 
     - name: Create new ElasticBeanstalk Application Version
       run: |
-          aws --region ap-south-1 elasticbeanstalk create-application-version --application-name helloworld --version-label 1.5 --source-bundle S3Bucket=githubtestbucket,S3Key=deploy_package.zip
+          aws --region ap-south-1 elasticbeanstalk create-application-version --application-name helloworld --version-label "ver-${{ github.sha }}" --source-bundle S3Bucket=githubtestbucket,S3Key=deploy_package.zip
     - name: Deploy new ElasticBeanstalk Application Version
-      run: aws --region ap-south-1 elasticbeanstalk update-environment --environment-name Helloworld-env --version-label 1.5  
+      run: aws --region ap-south-1 elasticbeanstalk update-environment --environment-name Helloworld-env --version-label "ver-${{ github.sha }}"
