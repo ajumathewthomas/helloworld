@@ -89,4 +89,4 @@ jobs:
     run: |
           aws --region ap-south-1 elasticbeanstalk create-application-version --application-name nonprod --version-label "ver-${{ github.sha }}" --source-bundle S3Bucket=githubtestbucket,S3Key=deploy_package.zip
   - name: Deploy new ElasticBeanstalk Application Version
-    run: aws --region ap-south-1 elasticbeanstalk update-environment --environment-name Nonprod-env --version-label "Sample Application"
+    run: aws --region ap-south-1 elasticbeanstalk update-environment --environment-name Nonprod-env --version-label "ver-${{ github.sha }}"
