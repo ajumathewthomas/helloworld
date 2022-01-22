@@ -53,10 +53,10 @@ jobs:
           aws-region: "us-east-1"
 
     - name: Upload package to S3 bucket
-      run: aws s3 cp deploy_package.zip s3://githubactiontest/
+      run: aws s3 cp deploy_package.zip s3://githubtestbucket/
 
     - name: Create new ElasticBeanstalk Application Version
       run: |
-          aws --region ap-south-1 elasticbeanstalk create-application-version --application-name my-application --version-label v1 --source-bundle S3Bucket=githubactiontest,S3Key=deploy_package.zip
+          aws --region ap-south-1 elasticbeanstalk create-application-version --application-name my-application --version-label v1 --source-bundle S3Bucket=githubtestbucket,S3Key=deploy_package.zip
     - name: Deploy new ElasticBeanstalk Application Version
       run: aws elasticbeanstalk update-environment --environment-name Helloworld-env --version-label "ver-${{ github.sha }}"
