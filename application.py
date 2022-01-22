@@ -23,19 +23,6 @@ application.register_blueprint(mod_mfa, url_prefix='/mfa')
 application.register_blueprint(mod_csp, url_prefix='/csp')
 application.register_blueprint(mod_api, url_prefix='/api')
 
-csp_file = Path('csp.txt')
-csp = ''
-
-if csp_file.is_file():
-    with csp_file.open() as f:
-        for line in f.readlines():
-            if line.startswith('#'):
-                continue
-            line = line.replace('\n', '')
-            if line:
-                csp += line
-if csp:
-    print('CSP:', csp)
 
 
 @application.route('/')
@@ -46,11 +33,5 @@ def do_home():
 def before_request():
     g.session = libsession.load(request)
 
-@application.after_request
-def add_csp_headers(response):
-    if csp:
-        response.headers['Content-Security-Policy'] = csp
-    return response
 
 
-application.run(debug=True, host='127.0.0.1', port=443, extra_files='csp.txt')
