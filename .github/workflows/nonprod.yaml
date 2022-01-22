@@ -59,4 +59,4 @@ jobs:
       run: |
           aws --region ap-south-1 elasticbeanstalk create-application-version --application-name helloworld --version-label v1 --source-bundle S3Bucket=githubtestbucket,S3Key=deploy_package.zip
     - name: Deploy new ElasticBeanstalk Application Version
-      run: aws elasticbeanstalk update-environment --environment-name Helloworld-env --version-label "ver-${{ github.sha }}"
+      run: aws elasticbeanstalk update-environment --environment-name Flask-env --version-label "ver-${{ github.sha }}"
