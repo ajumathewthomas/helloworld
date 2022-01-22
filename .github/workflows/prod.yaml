@@ -1,0 +1,91 @@
+name: Deploying to prod AWS EB
+on:
+ push:
+   branches:
+     - main
+
+  
+jobs:
+ lint:
+  runs-on: ubuntu-latest
+  steps:
+    - name: check out code
+      uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Installing Libraries
+      run: |
+          pip install flake8
+    - name: Lint with flake8
+      run: |
+           # Select identifies which errors should cause the job to fail
+           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+           # The exit zero flag will show errors as warnings and not fail the run
+           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+
+ build:
+  runs-on: ubuntu-latest
+  needs: lint
+  steps: 
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with: 
+          python-version: 3.8
+    - name: Installing Libraries
+      run: |
+            python -m pip install --upgrade pip
+            if [ -f requirements.txt ]; then pip install -r requirements.txt -t .; fi
+    - name: create zip bundle
+      run: | 
+
+          zip -r deploy_package.zip ./
+    - name: Archive Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: zipped-bundle
+        path: deploy_package.zip
+           
+ upload:
+  runs-on: ubuntu-latest
+  needs: build
+  steps:
+  -  name: checkout code
+     uses: actions/checkout@v2
+  -  name: Set up Python
+     uses: actions/setup-python@v2
+     with: 
+        python-version: 3.8   
+  - name: Configure AWS Credentials
+    uses: aws-actions/configure-aws-credentials@v1
+    with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: "us-east-1"
+  - name: Download artifact
+    uses: actions/download-artifact@v2
+    with:
+       name: zipped-bundle
+
+  - name: Upload package to S3 bucket
+    run: aws s3 cp deploy_package.zip s3://githubprodbucket/
+
+ deploy:
+  runs-on: ubuntu-latest
+  needs: upload
+  steps:
+  - name: Configure AWS Credentials
+    uses: aws-actions/configure-aws-credentials@v1
+    with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: "us-east-1"
+  - name: Create new ElasticBeanstalk Application Version on Prod
+    run: |
+          aws --region ap-south-1 elasticbeanstalk create-application-version --application-name prod --version-label "ver-${{ github.sha }}" --source-bundle S3Bucket=githubprodbucket,S3Key=deploy_package.zip
+  - name: Deploy new ElasticBeanstalk Application Version on Prod
+    run: aws --region ap-south-1 elasticbeanstalk update-environment --environment-name Prod-env --version-label "ver-${{ github.sha }}"
