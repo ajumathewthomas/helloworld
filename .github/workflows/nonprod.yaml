@@ -1,4 +1,4 @@
-name: Deploying to EB
+name: Deploying to non prod EB
 on:
  push:
    branches:
@@ -85,8 +85,8 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: "us-east-1"
-  - name: Create new ElasticBeanstalk Application Version
+  - name: Create new ElasticBeanstalk Application Version for nonprod
     run: |
           aws --region ap-south-1 elasticbeanstalk create-application-version --application-name nonprod --version-label "ver-${{ github.sha }}" --source-bundle S3Bucket=githubtestbucket,S3Key=deploy_package.zip
-  - name: Deploy new ElasticBeanstalk Application Version
+  - name: Deploy new ElasticBeanstalk Application Version for nonprod
     run: aws --region ap-south-1 elasticbeanstalk update-environment --environment-name Nonprod-env --version-label "ver-${{ github.sha }}"
