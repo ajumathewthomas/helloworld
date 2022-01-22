@@ -84,8 +84,8 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: "us-east-1"
-  - name: Create new ElasticBeanstalk Application Version
+  - name: Create new ElasticBeanstalk Application Version on Prod
     run: |
           aws --region ap-south-1 elasticbeanstalk create-application-version --application-name prod --version-label "ver-${{ github.sha }}" --source-bundle S3Bucket=githubprodbucket,S3Key=deploy_package.zip
-  - name: Deploy new ElasticBeanstalk Application Version
+  - name: Deploy new ElasticBeanstalk Application Version on Prod
     run: aws --region ap-south-1 elasticbeanstalk update-environment --environment-name Prod-env --version-label "ver-${{ github.sha }}"
