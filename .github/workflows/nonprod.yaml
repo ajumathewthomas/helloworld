@@ -53,13 +53,13 @@ jobs:
           aws-region: "us-east-1"
 
     - name: Upload package to S3 bucket
-      run: aws s3 cp deploy_package.zip s3://my-awesome-app-deploy-andrey/
+      run: aws s3 cp deploy_package.zip s3://githubtestbucket/
 
     - name: Create new ElasticBeanstalk Application Version
       run: |
           aws elasticbeanstalk create-application-version \
           --application-name my-awesome-app \
-          --source-bundle S3Bucket="my-awesome-app-deploy-andrey",S3Key="deploy_package.zip" \
+          --source-bundle S3Bucket="githubtestbucket",S3Key="deploy_package.zip" \
           --version-label "ver-${{ github.sha }}" \
           --description "commit-sha-${{ github.sha }}"
     - name: Deploy new ElasticBeanstalk Application Version
