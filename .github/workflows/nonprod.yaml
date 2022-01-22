@@ -45,18 +45,48 @@ jobs:
       run: | 
 
           zip -r deploy_package.zip ./
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
+    - name: Archive Artifact
+      uses: actions/upload-artifact@v2
       with:
+        name: zipped-bundle
+        path: deploy_package.zip
+           
+upload:
+  runs-on: ubuntu-latest
+  needs: build
+  steps:
+  -  name: checkout code
+     uses: actions/checkout@v2
+  -  name: Set up Python
+     uses: actions/setup-python@v2
+     with: 
+        python-version: 3.8   
+  - name: Configure AWS Credentials
+    uses: aws-actions/configure-aws-credentials@v1
+    with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: "us-east-1"
+  - name: Download artifact
+    uses: actions/download-artifact@v2
+    with:
+       name: zipped-bundle
 
-    - name: Upload package to S3 bucket
-      run: aws s3 cp deploy_package.zip s3://githubtestbucket/
+  - name: Upload package to S3 bucket
+    run: aws s3 cp deploy_package.zip s3://githubtestbucket/
 
-    - name: Create new ElasticBeanstalk Application Version
-      run: |
+deploy:
+ runs-on: ubuntu-latest
+ needs: upload
+ steps:
+  - name: Configure AWS Credentials
+    uses: aws-actions/configure-aws-credentials@v1
+    with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: "us-east-1"
+  - name: Create new ElasticBeanstalk Application Version
+    run: |
           aws --region ap-south-1 elasticbeanstalk create-application-version --application-name helloworld --version-label "ver-${{ github.sha }}" --source-bundle S3Bucket=githubtestbucket,S3Key=deploy_package.zip
-    - name: Deploy new ElasticBeanstalk Application Version
-      run: aws --region ap-south-1 elasticbeanstalk update-environment --environment-name Helloworld-env --version-label "ver-${{ github.sha }}"
+  - name: Deploy new ElasticBeanstalk Application Version
+    run: aws --region ap-south-1 elasticbeanstalk update-environment --environment-name Helloworld-env --version-label "ver-${{ github.sha }}"
