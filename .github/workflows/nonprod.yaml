@@ -57,6 +57,6 @@ jobs:
 
     - name: Create new ElasticBeanstalk Application Version
       run: |
-          aws --region ap-south-1 elasticbeanstalk create-application-version --application-name myApp --version-label "ver-${{ github.sha }}" --source-bundle S3Bucket=githubtestbucket,S3Key=deploy_package.zip
+          aws --region ap-south-1 elasticbeanstalk create-application-version --application-name flask --version-label "ver-${{ github.sha }}" --source-bundle S3Bucket=githubtestbucket,S3Key=deploy_package.zip
     - name: Deploy new ElasticBeanstalk Application Version
       run: aws elasticbeanstalk update-environment --environment-name Flask-env --version-label "ver-${{ github.sha }}"
