@@ -17,7 +17,6 @@ jobs:
         python-version: 3.8
     - name: Installing Libraries
       run: |
-          cd bad
           pip install flake8
     - name: Lint with flake8
       run: |
