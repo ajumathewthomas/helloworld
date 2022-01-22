@@ -1,4 +1,4 @@
-name: Deploying to EB
+name: Deploying to prod EB
 on:
  push:
    branches:
