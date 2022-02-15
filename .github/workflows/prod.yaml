@@ -1,4 +1,4 @@
-name: Deploying to prod AWS EB
+name: Deploying to non prod EB
 on:
  push:
    branches:
@@ -38,6 +38,7 @@ jobs:
           python-version: 3.8
     - name: Installing Libraries
       run: |
+            
             python -m pip install --upgrade pip
             if [ -f requirements.txt ]; then pip install -r requirements.txt -t .; fi
     - name: create zip bundle
@@ -72,7 +73,7 @@ jobs:
        name: zipped-bundle
 
   - name: Upload package to S3 bucket
-    run: aws s3 cp deploy_package.zip s3://githubprodbucket/
+    run: aws s3 cp deploy_package.zip s3://githubactionstestbucket1/
 
  deploy:
   runs-on: ubuntu-latest
@@ -84,8 +85,8 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: "us-east-1"
-  - name: Create new ElasticBeanstalk Application Version on Prod
+  - name: Create new ElasticBeanstalk Application Version for nonprod
     run: |
-          aws --region ap-south-1 elasticbeanstalk create-application-version --application-name prod --version-label "ver-${{ github.sha }}" --source-bundle S3Bucket=githubprodbucket,S3Key=deploy_package.zip
-  - name: Deploy new ElasticBeanstalk Application Version on Prod
-    run: aws --region ap-south-1 elasticbeanstalk update-environment --environment-name Prod-env --version-label "ver-${{ github.sha }}"
+          aws --region us-east-1 elasticbeanstalk create-application-version --application-name flasapp --version-label "ver-${{ github.sha }}" --source-bundle S3Bucket=githubactionstestbucket1,S3Key=deploy_package.zip
+  - name: Deploy new ElasticBeanstalk Application Version for nonprod
+    run: aws --region us-east-1 elasticbeanstalk update-environment --environment-name Flasapp-env --version-label "ver-${{ github.sha }}"
