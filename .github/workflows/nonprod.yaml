@@ -2,7 +2,7 @@ name: Deploying to non prod EB
 on:
  push:
    branches:
-     - feature-*
+     - main
 
   
 jobs:
@@ -66,14 +66,14 @@ jobs:
     with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-          aws-region: "us-east-1"
+          aws-region: "ap-south-1"
   - name: Download artifact
     uses: actions/download-artifact@v2
     with:
        name: zipped-bundle
 
   - name: Upload package to S3 bucket
-    run: aws s3 cp deploy_package.zip s3://githubtestbucket/
+    run: aws s3 cp deploy_package.zip s3://githubactionsbucket666/
 
  deploy:
   runs-on: ubuntu-latest
@@ -84,9 +84,9 @@ jobs:
     with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-          aws-region: "us-east-1"
+          aws-region: "ap-south-1"
   - name: Create new ElasticBeanstalk Application Version for nonprod
     run: |
-          aws --region ap-south-1 elasticbeanstalk create-application-version --application-name nonprod --version-label "ver-${{ github.sha }}" --source-bundle S3Bucket=githubtestbucket,S3Key=deploy_package.zip
+          aws --region ap-south-1 elasticbeanstalk create-application-version --application-name vulnerableapp --version-label "ver-${{ github.sha }}" --source-bundle S3Bucket=githubactionsbucket666,S3Key=deploy_package.zip
   - name: Deploy new ElasticBeanstalk Application Version for nonprod
-    run: aws --region ap-south-1 elasticbeanstalk update-environment --environment-name Nonprod-env --version-label "ver-${{ github.sha }}"
+    run: aws --region ap-south-1 elasticbeanstalk update-environment --environment-name Vulnerableapp-env --version-label "ver-${{ github.sha }}"
